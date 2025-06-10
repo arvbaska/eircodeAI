@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eircode Search</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2em; }
+    #result { margin-top: 1em; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>Eircode Search</h1>
+  <input type="text" id="query" placeholder="Enter eircode or full address" size="40" />
+  <button id="searchBtn">Search</button>
+  <div id="result"></div>
+  <script>
+    document.getElementById('searchBtn').addEventListener('click', () => {
+      const q = document.getElementById('query').value.trim();
+      const resultEl = document.getElementById('result');
+      resultEl.textContent = '';
+      if (!q) {
+        resultEl.textContent = 'Please enter a query.';
+        return;
+      }
+      fetch('/search?q=' + encodeURIComponent(q))
+        .then(r => {
+          if (!r.ok) throw new Error('No match');
+          return r.json();
+        })
+        .then(data => {
+          resultEl.textContent = 'Full address: ' + data.address;
+        })
+        .catch(() => {
+          resultEl.textContent = 'No results found.';
+        });
+    });
+  </script>
+</body>
+</html>
